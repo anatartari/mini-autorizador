@@ -15,7 +15,7 @@ public class Cartao {
     @Column(unique = true)
     private String numeroCartao;
     private String senha;
-    private double saldo;
+    private Double saldo;
 
     public Cartao(String numeroCartao, String senha, double saldo) {
         this.numeroCartao = numeroCartao;

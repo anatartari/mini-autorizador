@@ -3,7 +3,6 @@ package com.solutis.miniautorizador.service;
 import com.solutis.miniautorizador.exception.CartaoExistenteException;
 import com.solutis.miniautorizador.model.Cartao;
 import com.solutis.miniautorizador.repository.CartaoRepository;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.runner.RunWith;
 import com.solutis.miniautorizador.dto.CartaoDto;
 import org.junit.Test;
@@ -11,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.junit4.SpringRunner;
+
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -24,9 +25,8 @@ public class CartaoServicoTest {
     @Autowired
     private CartaoRepository cartaoRepository;
 
-    @BeforeAll
     private void Inicializar(){
-        Cartao cartao = new Cartao("123456789", "123456", 500);
+        Cartao cartao = new Cartao("123456789", "123456", 700.00);
         cartaoRepository.save(cartao);
     }
 
@@ -41,10 +41,7 @@ public class CartaoServicoTest {
 
     @Test
     public void deveRetornarErroAoCriarCartaoComNumeroExistente(){
-
-        Cartao cartao = new Cartao("123456789", "123456", 500);
-        cartaoRepository.save(cartao);
-
+        Inicializar();
         CartaoDto cartaoDuplicado = new CartaoDto("123456789", "senha");
 
         try{
@@ -54,6 +51,27 @@ public class CartaoServicoTest {
         catch(Exception e){
             assertTrue(e.getClass() == CartaoExistenteException.class);
         }
+    }
+
+    @Test
+    public void deveReotornarSaldoDoCartaoCadastradoParaNumeroExistente(){
+        Inicializar();
+        String numeroDeCartaoExistente = "123456789";
+
+        Optional<Double> saldoCartao = servicoDeCartao.obterSaldo(numeroDeCartaoExistente);
+
+        assertEquals(700.00, saldoCartao.get());
+    }
+
+    @Test
+    public void deveReotornarErroParaNumeroInexistente(){
+        Inicializar();
+        String numeroDeCartaoInexistente = "111111111";
+
+        Optional<Double> saldoCartao = servicoDeCartao.obterSaldo(numeroDeCartaoInexistente);
+
+        assertFalse(saldoCartao.isPresent());
 
     }
+
 }

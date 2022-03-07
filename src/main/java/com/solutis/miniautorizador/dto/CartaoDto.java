@@ -13,7 +13,7 @@ import javax.validation.constraints.NotNull;
 @Setter
 public class CartaoDto {
 
-    @NotNull(message = "Teste mensagem")
+    @NotNull
     @NotEmpty
     private String numeroCartao;
 
