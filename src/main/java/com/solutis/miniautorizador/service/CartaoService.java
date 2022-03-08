@@ -1,9 +1,11 @@
 package com.solutis.miniautorizador.service;
 
 import com.solutis.miniautorizador.dto.CartaoDto;
+import com.solutis.miniautorizador.dto.TransacaoDto;
 import com.solutis.miniautorizador.exception.HandleException;
 import com.solutis.miniautorizador.model.Cartao;
 import com.solutis.miniautorizador.repository.CartaoRepository;
+import com.solutis.miniautorizador.utils.ValidacoesEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,10 +21,10 @@ public class CartaoService {
 
     public CartaoDto criar(CartaoDto cartaoDto) {
 
-        Cartao cartao = cartaoRepository.existsById(cartaoDto.getNumeroCartao()) ? handleException.throwCartaoExistente()
+        Object cartao = cartaoRepository.existsById(cartaoDto.getNumeroCartao()) ? handleException.throwExcecaoDeValidacao(ValidacoesEnum.CARTAO_EXISTENTE)
                 : cartaoRepository.save(new Cartao(cartaoDto));
 
-        return new CartaoDto(cartao);
+        return new CartaoDto((Cartao) cartao);
     }
 
     public Optional<Double> obterSaldo(String numeroDeCartaoExistente) {
@@ -30,5 +32,18 @@ public class CartaoService {
         Optional<Double> saldoDoCartao = cartaoRepository.obterSaldoDoCartao(numeroDeCartaoExistente);
 
         return saldoDoCartao;
+    }
+
+    public String realizarTransacao(TransacaoDto transacao) {
+
+        Optional<Cartao> cartaoOptional = cartaoRepository.findById(transacao.getNumeroCartao());
+
+        Object cartaoValido = cartaoOptional.isPresent() ? true : handleException.throwExcecaoDeValidacao(ValidacoesEnum.CARTAO_INEXISTENTE);
+        Cartao cartao = cartaoOptional.get();
+        cartaoValido = cartao.getSenha().equals(transacao.getSenha()) ? true : handleException.throwExcecaoDeValidacao(ValidacoesEnum.SENHA_INVALIDA);
+        cartaoValido = cartao.getSaldo() >= transacao.getValor()  ? cartaoRepository.save(cartao.calcularTransacao(transacao.getValor())) :
+                handleException.throwExcecaoDeValidacao(ValidacoesEnum.SALDO_INSUFICIENTE);
+
+        return "OK";
     }
 }

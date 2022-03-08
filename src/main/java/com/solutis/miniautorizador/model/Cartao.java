@@ -17,6 +17,12 @@ public class Cartao {
     private String senha;
     private Double saldo;
 
+    public Cartao calcularTransacao(Double valorTransacao){
+        this.saldo -= valorTransacao;
+        return this;
+    }
+
+
     public Cartao(String numeroCartao, String senha, double saldo) {
         this.numeroCartao = numeroCartao;
         this.senha = senha;

@@ -1,8 +1,13 @@
 package com.solutis.miniautorizador.service;
 
+import com.solutis.miniautorizador.dto.TransacaoDto;
 import com.solutis.miniautorizador.exception.CartaoExistenteException;
+import com.solutis.miniautorizador.exception.CartaoInexistenteException;
+import com.solutis.miniautorizador.exception.SaldoInsuficienteException;
+import com.solutis.miniautorizador.exception.SenhaIncorretaException;
 import com.solutis.miniautorizador.model.Cartao;
 import com.solutis.miniautorizador.repository.CartaoRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.runner.RunWith;
 import com.solutis.miniautorizador.dto.CartaoDto;
 import org.junit.Test;
@@ -72,6 +77,59 @@ public class CartaoServicoTest {
 
         assertFalse(saldoCartao.isPresent());
 
+    }
+
+    @Test
+    public void deveRetornarTransacaoBemSucedida(){
+        Inicializar();
+        Double saldoCartao = cartaoRepository.findById("123456789").get().getSaldo();
+        TransacaoDto transacao = new TransacaoDto("123456789", "123456", 100.00);
+
+        String resultado = servicoDeCartao.realizarTransacao(transacao);
+
+        Optional<Cartao> cartaoAtualziado = cartaoRepository.findById("123456789");
+
+        assertEquals("OK", resultado);
+        assertTrue(cartaoAtualziado.get().getSaldo() == (saldoCartao - transacao.getValor()));
+    }
+
+    @Test
+    public void deveRetornarErroParaTransacaoUsandoCartaoInexistente(){
+
+        TransacaoDto transacao = new TransacaoDto("123", "123456", 100.00);
+
+        try {
+            String resultado = servicoDeCartao.realizarTransacao(transacao);
+            fail();
+        }catch (Exception e){
+            assertSame(e.getClass(), CartaoInexistenteException.class);
+        }
+    }
+
+    @Test
+    public void deveRetornarErroParaTransacaoUsandoSenhaIncorreta(){
+        Inicializar();
+        TransacaoDto transacao = new TransacaoDto("123456789", "00000", 100.00);
+
+        try {
+            String resultado = servicoDeCartao.realizarTransacao(transacao);
+            fail();
+        }catch (Exception e){
+            assertSame(e.getClass(), SenhaIncorretaException.class);
+        }
+    }
+
+    @Test
+    public void deveRetornarErroParaTransacaoUsandoCartaoComSaldoInsuficiente(){
+        Inicializar();
+        TransacaoDto transacao = new TransacaoDto("123456789", "123456", 100000.00);
+
+        try {
+            String resultado = servicoDeCartao.realizarTransacao(transacao);
+            fail();
+        }catch (Exception e){
+            assertSame(e.getClass(), SaldoInsuficienteException.class);
+        }
     }
 
 }

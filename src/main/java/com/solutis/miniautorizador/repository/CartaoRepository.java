@@ -12,4 +12,5 @@ public interface CartaoRepository extends JpaRepository<Cartao, String> {
 
     @Query("SELECT c.saldo FROM Cartao c WHERE c.numeroCartao like :numeroDeCartaoExistente")
     Optional<Double> obterSaldoDoCartao(String numeroDeCartaoExistente);
+
 }
