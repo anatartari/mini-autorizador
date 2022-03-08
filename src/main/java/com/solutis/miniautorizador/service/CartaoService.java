@@ -41,8 +41,7 @@ public class CartaoService {
         Object cartaoValido = cartaoOptional.isPresent() ? true : handleException.throwExcecaoDeValidacao(ValidacoesEnum.CARTAO_INEXISTENTE);
         Cartao cartao = cartaoOptional.get();
         cartaoValido = cartao.getSenha().equals(transacao.getSenha()) ? true : handleException.throwExcecaoDeValidacao(ValidacoesEnum.SENHA_INVALIDA);
-        cartaoValido = cartao.getSaldo() >= transacao.getValor()  ? cartaoRepository.save(cartao.calcularTransacao(transacao.getValor())) :
-                handleException.throwExcecaoDeValidacao(ValidacoesEnum.SALDO_INSUFICIENTE);
+        cartao.validarAtribuirNovoSaldo(transacao.getValor(), handleException);
 
         return "OK";
     }

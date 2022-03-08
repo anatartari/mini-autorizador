@@ -1,6 +1,8 @@
 package com.solutis.miniautorizador.model;
 
 import com.solutis.miniautorizador.dto.CartaoDto;
+import com.solutis.miniautorizador.exception.HandleException;
+import com.solutis.miniautorizador.utils.ValidacoesEnum;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -22,6 +24,10 @@ public class Cartao {
         return this;
     }
 
+    public void validarAtribuirNovoSaldo(Double valor, HandleException handleException) {
+        this.saldo = this.saldo >= valor ? this.saldo - valor :
+                (Double) handleException.throwExcecaoDeValidacao(ValidacoesEnum.SALDO_INSUFICIENTE);
+    }
 
     public Cartao(String numeroCartao, String senha, double saldo) {
         this.numeroCartao = numeroCartao;
@@ -37,4 +43,6 @@ public class Cartao {
 
     public Cartao() {
     }
+
+
 }

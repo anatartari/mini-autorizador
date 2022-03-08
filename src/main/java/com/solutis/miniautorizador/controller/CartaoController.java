@@ -44,10 +44,8 @@ public class CartaoController {
 
     @PostMapping("/transacoes")
     public ResponseEntity<String> realizarTransacao(@RequestBody @Valid TransacaoDto transacao){
-        try{
+        try {
             return new ResponseEntity<String>(cartaoService.realizarTransacao(transacao), HttpStatus.CREATED);
-        }catch (CartaoExistenteException e){
-            return new ResponseEntity<String>(ValidacoesEnum.CARTAO_EXISTENTE.getMensagemDeErro(), HttpStatus.UNPROCESSABLE_ENTITY);
         }
         catch (CartaoInexistenteException e){
             return new ResponseEntity<String>(ValidacoesEnum.CARTAO_INEXISTENTE.getMensagemDeErro(), HttpStatus.UNPROCESSABLE_ENTITY);
