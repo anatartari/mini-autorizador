@@ -16,13 +16,12 @@ public class TransacaoDto {
     @NotEmpty
     private String numeroCartao;
 
-    @NotNull(message = "Teste")
+    @NotNull
     @NotEmpty
     private String senha;
 
-    @NotEmpty
     @NotNull
-    @Min(value = 0)
+    @Min(value = 1)
     private Double valor;
 
     public TransacaoDto(String numeroCartao, String senha, Double valor) {
