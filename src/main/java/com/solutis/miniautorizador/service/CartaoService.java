@@ -8,6 +8,7 @@ import com.solutis.miniautorizador.repository.CartaoRepository;
 import com.solutis.miniautorizador.utils.ValidacoesEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -34,6 +35,7 @@ public class CartaoService {
         return saldoDoCartao;
     }
 
+    @Transactional
     public String realizarTransacao(TransacaoDto transacao) {
 
         Optional<Cartao> cartaoOptional = cartaoRepository.findById(transacao.getNumeroCartao());
