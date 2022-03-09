@@ -6,7 +6,7 @@ A descrição completa do desafio pode ser encontrada no arquivo [DESAFIO.md](ht
 
 ## Desenvolvimento
 
-###TDD
+### TDD
 Durante o desenvolvimento do projeto foi utilizado a abordagem do TDD (_Test-Driven Development_) para que o codigo
 seja feito de maneira limpa e simples, devido ao incentivo de desenvolvimento de pequenos passos por vez, evitanso assim
 codigos desnecessários e pela maior confiabilidade do código por ser testado contantemente durante o desenvolvimento.
@@ -22,7 +22,7 @@ Sendo assim temos a divisão do projeto nas seguintes camadas:
  * **Service**: Camada onde esta localizada a aplicação das regras de negocios;
  * **Repository**: Isola os objetos ou entidades do domínio do código que acessa o banco de dados.
 
-###Desafios Opcionais
+### Desafios Opcionais
 O desafio apresentado contou com 2 desafios opcionais:
 <br/><br/>
 **Construção da solução sem a utilização dos comandos `if`, `continue` e `break`**:<br/>
