@@ -1,5 +1,6 @@
 package com.solutis.miniautorizador.controller;
 
+import com.solutis.miniautorizador.dto.CartaoCriacaoDto;
 import com.solutis.miniautorizador.dto.CartaoDto;
 import com.solutis.miniautorizador.dto.TransacaoDto;
 import com.solutis.miniautorizador.exception.CartaoExistenteException;
@@ -24,13 +25,13 @@ public class CartaoController {
     private CartaoService cartaoService;
 
     @PostMapping("/cartoes")
-    public ResponseEntity<CartaoDto> criar(@RequestBody @Valid CartaoDto cartaoDto){
+    public ResponseEntity<Object> criar(@RequestBody @Valid CartaoCriacaoDto cartaoDto){
 
         try {
-            return new ResponseEntity<CartaoDto>(cartaoService.criar(cartaoDto),HttpStatus.CREATED);
+            return new ResponseEntity<Object>(cartaoService.criar(cartaoDto),HttpStatus.CREATED);
         }
         catch (Exception e){
-            return new ResponseEntity<CartaoDto>(cartaoDto, HttpStatus.UNPROCESSABLE_ENTITY);
+            return new ResponseEntity<Object>(cartaoDto, HttpStatus.UNPROCESSABLE_ENTITY);
 
         }
     }

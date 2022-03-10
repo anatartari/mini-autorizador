@@ -1,5 +1,6 @@
 package com.solutis.miniautorizador.service;
 
+import com.solutis.miniautorizador.dto.CartaoCriacaoDto;
 import com.solutis.miniautorizador.dto.TransacaoDto;
 import com.solutis.miniautorizador.exception.CartaoExistenteException;
 import com.solutis.miniautorizador.exception.CartaoInexistenteException;
@@ -7,7 +8,6 @@ import com.solutis.miniautorizador.exception.SaldoInsuficienteException;
 import com.solutis.miniautorizador.exception.SenhaIncorretaException;
 import com.solutis.miniautorizador.model.Cartao;
 import com.solutis.miniautorizador.repository.CartaoRepository;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.runner.RunWith;
 import com.solutis.miniautorizador.dto.CartaoDto;
 import org.junit.Test;
@@ -16,6 +16,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.time.LocalDate;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -37,17 +38,21 @@ public class CartaoServicoTest {
 
     @Test
     public void deveRetornarSucessoAoCriarCartao(){
-        CartaoDto cartao = new CartaoDto("987654321", "123456");
+        CartaoCriacaoDto cartao = new CartaoCriacaoDto("987654321", "123456");
 
         CartaoDto cartaoCriado = servicoDeCartao.criar(cartao);
 
+        Cartao cartaoResultado = new Cartao(cartaoCriado);
+
         assertEquals(500.00, cartaoRepository.findById(cartaoCriado.getNumeroCartao()).get().getSaldo());
+        assertEquals(LocalDate.now(), cartaoResultado.getDataCriacao());
+        assertEquals(LocalDate.now().plusYears(3).plusMonths(10), cartaoResultado.getValidade());
     }
 
     @Test
     public void deveRetornarErroAoCriarCartaoComNumeroExistente(){
         Inicializar();
-        CartaoDto cartaoDuplicado = new CartaoDto("123456789", "senha");
+        CartaoCriacaoDto cartaoDuplicado = new CartaoCriacaoDto("123456789", "senha");
 
         try{
             CartaoDto cartaoCriado = servicoDeCartao.criar(cartaoDuplicado);

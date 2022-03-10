@@ -1,5 +1,6 @@
 package com.solutis.miniautorizador.service;
 
+import com.solutis.miniautorizador.dto.CartaoCriacaoDto;
 import com.solutis.miniautorizador.dto.CartaoDto;
 import com.solutis.miniautorizador.dto.TransacaoDto;
 import com.solutis.miniautorizador.exception.HandleException;
@@ -20,10 +21,10 @@ public class CartaoService {
     @Autowired
     private HandleException handleException;
 
-    public CartaoDto criar(CartaoDto cartaoDto) {
+    public CartaoDto criar(CartaoCriacaoDto cartaoCriacaoDto) {
 
-        Object cartao = cartaoRepository.existsById(cartaoDto.getNumeroCartao()) ? handleException.throwExcecaoDeValidacao(ValidacoesEnum.CARTAO_EXISTENTE)
-                : cartaoRepository.save(new Cartao(cartaoDto));
+        Object cartao = cartaoRepository.existsById(cartaoCriacaoDto.getNumeroCartao()) ? handleException.throwExcecaoDeValidacao(ValidacoesEnum.CARTAO_EXISTENTE)
+                : cartaoRepository.save(new Cartao(cartaoCriacaoDto));
 
         return new CartaoDto((Cartao) cartao);
     }
