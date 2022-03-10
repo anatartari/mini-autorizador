@@ -27,6 +27,8 @@ public class Cartao {
     @Column(name = "data_criacao")
     private LocalDate dataCriacao;
     private LocalDate validade;
+    @ManyToOne
+    private Cliente cliente;
 
     public Cartao(CartaoCriacaoDto cartaoCriacaoDto) {
         this.numeroCartao = cartaoCriacaoDto.getNumeroCartao();
