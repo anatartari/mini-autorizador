@@ -59,7 +59,7 @@ public class CartaoServicoTest {
             fail();
         }
         catch(Exception e){
-            assertTrue(e.getClass() == CartaoExistenteException.class);
+            assertSame(e.getClass(), CartaoExistenteException.class);
         }
     }
 

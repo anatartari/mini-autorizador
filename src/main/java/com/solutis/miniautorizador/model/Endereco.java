@@ -22,7 +22,11 @@ public class Endereco {
     @OneToOne(mappedBy = "endereco")
     private Cliente cliente;
 
-    public Endereco() {
+    public Endereco(String logradouro, String cidade, String estado, String complemento) {
+        this.logradouro = logradouro;
+        this.cidade = cidade;
+        this.estado = estado;
+        this.complemento = complemento;
     }
 
     public Endereco(EnderecoCriacaoDto endereco) {
@@ -30,5 +34,8 @@ public class Endereco {
         this.cidade = endereco.getCidade();
         this.estado = endereco.getEstado();
         this.complemento = endereco.getComplemento();
+    }
+
+    public Endereco() {
     }
 }

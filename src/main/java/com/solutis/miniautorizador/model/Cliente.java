@@ -30,12 +30,18 @@ public class Cliente {
     @JoinColumn(name = "endereco_id", referencedColumnName = "id")
     private Endereco endereco;
 
-    public Cliente() {
+    public Cliente( String cpf, LocalDate data_inicio, List<Cartao> cartoes, Endereco endereco) {
+        this.cpf = cpf;
+        this.data_inicio = data_inicio;
+        this.cartoes = cartoes;
+        this.endereco = endereco;
     }
 
     public Cliente(ClienteCriacaoDto clienteRequest) {
         this.cpf = clienteRequest.getCpf();
         this.data_inicio = LocalDate.now();
         this.endereco = new Endereco(clienteRequest.getEndereco());
+    }
+    public Cliente() {
     }
 }
