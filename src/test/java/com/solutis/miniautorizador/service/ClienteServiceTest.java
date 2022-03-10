@@ -6,6 +6,7 @@ import com.solutis.miniautorizador.dto.ClienteDto;
 import com.solutis.miniautorizador.dto.EnderecoCriacaoDto;
 import com.solutis.miniautorizador.exception.CartaoExistenteException;
 import com.solutis.miniautorizador.exception.ClienteExistenteException;
+import com.solutis.miniautorizador.exception.ClienteInexistenteException;
 import com.solutis.miniautorizador.model.Cliente;
 import com.solutis.miniautorizador.model.Endereco;
 import com.solutis.miniautorizador.repository.ClienteRepository;
@@ -66,7 +67,20 @@ public class ClienteServiceTest {
         catch(Exception e){
             assertSame(e.getClass(), ClienteExistenteException.class);
         }
+    }
 
+    @Test
+    public void deveriaRetornarSucessoParaBuscarDeClienteExistente(){
+        Inicializar();
+        Cliente cliente = clienteRepository.findByCpf("44433322211").get();
+        ClienteDto clienteDto = clienteService.obterCliente(cliente.getId());
+        assertEquals("44433322211", clienteDto.getCpf());
+    }
+
+    @Test
+    public void deveriaRetornarErroParaBuscaDeClienteComIdInexistente(){
+        ClienteDto clienteDto = clienteService.obterCliente(99);
+        assertNull(clienteDto);
     }
 
 }

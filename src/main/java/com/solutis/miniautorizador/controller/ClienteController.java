@@ -7,12 +7,10 @@ import com.solutis.miniautorizador.service.ClienteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.Optional;
 
 @RestController
 @RequestMapping
@@ -30,6 +28,13 @@ public class ClienteController {
         catch (Exception e){
             return new ResponseEntity<Object>(clienteCriacaoDto, HttpStatus.UNPROCESSABLE_ENTITY);
         }
+    }
+
+    @GetMapping("/cliente/{idCliente}")
+    public ResponseEntity<ClienteDto> obterSaldo(@PathVariable(required = true) Integer idCliente){
+        ClienteDto clienteDto = clienteService.obterCliente(idCliente);
+
+        return clienteDto != null ? new ResponseEntity<ClienteDto>(clienteDto, HttpStatus.OK) : ResponseEntity.notFound().build();
     }
 
 }
