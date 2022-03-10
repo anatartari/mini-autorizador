@@ -1,11 +1,14 @@
 package com.solutis.miniautorizador.model;
 
 import com.solutis.miniautorizador.dto.CartaoDto;
+import com.solutis.miniautorizador.dto.ClienteCriacaoDto;
 import com.solutis.miniautorizador.dto.EnderecoDto;
 import lombok.Getter;
 import lombok.Setter;
+import org.apache.tomcat.jni.Local;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,7 +21,7 @@ public class Cliente {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Integer id;
     public String cpf;
-    public String data_inicio;
+    public LocalDate data_inicio;
 
     @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL)
     private List<Cartao> cartoes = new ArrayList<>();
@@ -28,5 +31,11 @@ public class Cliente {
     private Endereco endereco;
 
     public Cliente() {
+    }
+
+    public Cliente(ClienteCriacaoDto clienteRequest) {
+        this.cpf = clienteRequest.getCpf();
+        this.data_inicio = LocalDate.now();
+        this.endereco = new Endereco(clienteRequest.getEndereco());
     }
 }

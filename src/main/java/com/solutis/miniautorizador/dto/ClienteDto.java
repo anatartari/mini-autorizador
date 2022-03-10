@@ -1,10 +1,13 @@
 package com.solutis.miniautorizador.dto;
 
+import com.solutis.miniautorizador.model.Cliente;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -24,4 +27,12 @@ public class ClienteDto extends ClienteCriacaoDto {
     }
 
     public ClienteDto(){}
+
+    public ClienteDto(Cliente cliente) {
+        this.id = cliente.getId();
+        this.setCpf(cliente.getCpf());
+        this.data_inicio = cliente.getData_inicio().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+        this.cartoes = cliente.getCartoes().stream().map(CartaoDto::new).collect(Collectors.toList());
+        this.endereco = new EnderecoDto(cliente.getEndereco());
+    }
 }

@@ -1,5 +1,6 @@
 package com.solutis.miniautorizador.model;
 
+import com.solutis.miniautorizador.dto.EnderecoCriacaoDto;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -22,5 +23,12 @@ public class Endereco {
     private Cliente cliente;
 
     public Endereco() {
+    }
+
+    public Endereco(EnderecoCriacaoDto endereco) {
+        this.logradouro = endereco.getLogradouro();
+        this.cidade = endereco.getCidade();
+        this.estado = endereco.getEstado();
+        this.complemento = endereco.getComplemento();
     }
 }

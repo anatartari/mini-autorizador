@@ -1,5 +1,11 @@
 package com.solutis.miniautorizador.dto;
 
+import com.solutis.miniautorizador.model.Endereco;
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 public class EnderecoDto extends EnderecoCriacaoDto {
 
     private Integer id;
@@ -9,4 +15,8 @@ public class EnderecoDto extends EnderecoCriacaoDto {
         this.id = id;
     }
 
+    public EnderecoDto(Endereco endereco) {
+        super(endereco.getLogradouro(), endereco.getCidade(), endereco.getEstado(), endereco.getComplemento());
+        this.id = endereco.getId();
+    }
 }

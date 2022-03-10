@@ -24,6 +24,12 @@ public enum ValidacoesEnum {
         public String getMensagemDeErro() {
             return null;
         }
+    },
+    CLIENTE_EXISTENTE{
+        @Override
+        public String getMensagemDeErro() {
+            return "Cliente existente";
+        }
     };
 
     public abstract String getMensagemDeErro();
