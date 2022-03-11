@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -41,6 +42,13 @@ public class CartaoController {
         Optional<Double> saldo = cartaoService.obterSaldo(numeroCartao);
 
         return saldo.isPresent() ? new ResponseEntity<Double>(saldo.get(), HttpStatus.OK) : ResponseEntity.notFound().build();
+    }
+
+    @GetMapping("/cartoes/cliente/{cpf}")
+    public ResponseEntity<List<CartaoDto>> obterCartaoPorCliente(@PathVariable(required = false) String cpf){
+        List<CartaoDto> listaCartoes = cartaoService.obterCartaoPorCliente(cpf);
+
+        return listaCartoes == null ? ResponseEntity.notFound().build() : new ResponseEntity<List<CartaoDto>>(listaCartoes, HttpStatus.OK);
     }
 
     @PostMapping("/transacoes")

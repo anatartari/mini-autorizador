@@ -13,7 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class CartaoService {
@@ -43,6 +45,11 @@ public class CartaoService {
         Optional<Double> saldoDoCartao = cartaoRepository.obterSaldoDoCartao(numeroDeCartaoExistente);
 
         return saldoDoCartao;
+    }
+
+    public List<CartaoDto> obterCartaoPorCliente(String cpf){
+        Optional<List<Cartao>> listaCartoesCliente = cartaoRepository.findByCliente_Cpf(cpf);
+        return  listaCartoesCliente.isPresent() ? listaCartoesCliente.get().stream().map(CartaoDto::new).collect(Collectors.toList()) : null;
     }
 
     @Transactional
