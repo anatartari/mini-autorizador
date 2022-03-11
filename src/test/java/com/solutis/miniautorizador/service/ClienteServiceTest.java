@@ -1,12 +1,10 @@
 package com.solutis.miniautorizador.service;
 
-import com.solutis.miniautorizador.dto.CartaoDto;
 import com.solutis.miniautorizador.dto.ClienteCriacaoDto;
 import com.solutis.miniautorizador.dto.ClienteDto;
 import com.solutis.miniautorizador.dto.EnderecoCriacaoDto;
-import com.solutis.miniautorizador.exception.CartaoExistenteException;
+import com.solutis.miniautorizador.dto.EnderecoDto;
 import com.solutis.miniautorizador.exception.ClienteExistenteException;
-import com.solutis.miniautorizador.exception.ClienteInexistenteException;
 import com.solutis.miniautorizador.model.Cliente;
 import com.solutis.miniautorizador.model.Endereco;
 import com.solutis.miniautorizador.repository.ClienteRepository;
@@ -81,6 +79,23 @@ public class ClienteServiceTest {
     public void deveriaRetornarErroParaBuscaDeClienteComIdInexistente(){
         ClienteDto clienteDto = clienteService.obterCliente(99);
         assertNull(clienteDto);
+    }
+
+    @Test
+    public void deveriaRetornarEnderecoDoCliente(){
+        Inicializar();
+        Cliente cliente = clienteRepository.findByCpf("44433322211").get();
+        EnderecoDto enderecoDto = clienteService.obterEnderecoCliente(cliente.getId());
+
+        assertEquals(enderecoDto.getId(), cliente.getEndereco().getId());
+
+    }
+
+    @Test
+    public void deveriaRetornarNullParaBuscaDeEnderecoDeClienteInexistente(){
+        EnderecoDto enderecoDto = clienteService.obterEnderecoCliente(99);
+
+        assertNull(enderecoDto);
     }
 
 }
