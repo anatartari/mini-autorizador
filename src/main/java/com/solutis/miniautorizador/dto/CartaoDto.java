@@ -2,33 +2,31 @@ package com.solutis.miniautorizador.dto;
 
 import com.solutis.miniautorizador.model.Cartao;
 
+import com.solutis.miniautorizador.utils.atributos.CartaoBaseAtributos;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 
 @Getter
 @Setter
-public class CartaoDto {
+public class CartaoDto extends CartaoBaseAtributos {
 
-    @NotNull
-    @NotEmpty
-    private String numeroCartao;
-
-    @NotNull
-    @NotEmpty
-    private String senha;
-
-    public CartaoDto(String numeroDoCartao, String senha) {
-        this.numeroCartao = numeroDoCartao;
-        this.senha = senha;
-    }
+    private String dataCriacao = formatarData(LocalDate.now());
+    private String validade = formatarData(LocalDate.now().plusYears(3).plusMonths(10));
+    private String cpfCliente;
 
     public CartaoDto(Cartao cartao) {
-        this.numeroCartao = cartao.getNumeroCartao();
-        this.senha = cartao.getSenha();
+        super(cartao.getNumeroCartao(), cartao.getSenha());
+        this.dataCriacao = formatarData(cartao.getDataCriacao());
+        this.validade = formatarData(cartao.getValidade());
+        this.cpfCliente = cartao.getCliente().getCpf();
+    }
+
+    public static String formatarData(LocalDate data){
+        return data.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
     }
 
     public CartaoDto() {

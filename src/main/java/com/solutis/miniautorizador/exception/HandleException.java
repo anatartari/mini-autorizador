@@ -17,6 +17,8 @@ public class HandleException {
                throw new SenhaIncorretaException();
            case SALDO_INSUFICIENTE:
                throw new SaldoInsuficienteException();
+           case CLIENTE_EXISTENTE:
+               throw  new ClienteExistenteException();
            default:
                return null;
        }

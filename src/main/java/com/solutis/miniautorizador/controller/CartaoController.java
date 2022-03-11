@@ -1,5 +1,6 @@
 package com.solutis.miniautorizador.controller;
 
+import com.solutis.miniautorizador.dto.CartaoCriacaoDto;
 import com.solutis.miniautorizador.dto.CartaoDto;
 import com.solutis.miniautorizador.dto.TransacaoDto;
 import com.solutis.miniautorizador.exception.CartaoExistenteException;
@@ -14,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -24,13 +26,13 @@ public class CartaoController {
     private CartaoService cartaoService;
 
     @PostMapping("/cartoes")
-    public ResponseEntity<CartaoDto> criar(@RequestBody @Valid CartaoDto cartaoDto){
+    public ResponseEntity<Object> criar(@RequestBody @Valid CartaoCriacaoDto cartaoDto){
 
         try {
-            return new ResponseEntity<CartaoDto>(cartaoService.criar(cartaoDto),HttpStatus.CREATED);
+            return new ResponseEntity<Object>(cartaoService.criar(cartaoDto), HttpStatus.CREATED);
         }
         catch (Exception e){
-            return new ResponseEntity<CartaoDto>(cartaoDto, HttpStatus.UNPROCESSABLE_ENTITY);
+            return new ResponseEntity<Object>(cartaoDto, HttpStatus.UNPROCESSABLE_ENTITY);
 
         }
     }
@@ -40,6 +42,13 @@ public class CartaoController {
         Optional<Double> saldo = cartaoService.obterSaldo(numeroCartao);
 
         return saldo.isPresent() ? new ResponseEntity<Double>(saldo.get(), HttpStatus.OK) : ResponseEntity.notFound().build();
+    }
+
+    @GetMapping("/cartoes/cliente/{cpf}")
+    public ResponseEntity<List<CartaoDto>> obterCartaoPorCliente(@PathVariable(required = false) String cpf){
+        List<CartaoDto> listaCartoes = cartaoService.obterCartaoPorCliente(cpf);
+
+        return listaCartoes == null ? ResponseEntity.notFound().build() : new ResponseEntity<List<CartaoDto>>(listaCartoes, HttpStatus.OK);
     }
 
     @PostMapping("/transacoes")
