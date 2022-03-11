@@ -8,7 +8,6 @@ import com.solutis.miniautorizador.exception.ClienteExistenteException;
 import com.solutis.miniautorizador.model.Cliente;
 import com.solutis.miniautorizador.model.Endereco;
 import com.solutis.miniautorizador.repository.ClienteRepository;
-import com.solutis.miniautorizador.repository.EnderecoRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,32 +29,28 @@ public class ClienteServiceTest {
     private ClienteService clienteService;
     @Autowired
     private ClienteRepository clienteRepository;
-    @Autowired
-    private EnderecoRepository enderecoRepository;
 
     private void Inicializar(){
-        clienteRepository.save(new Cliente("44433322211", LocalDate.now(), new ArrayList<>(),
+        clienteRepository.saveAndFlush(new Cliente("44433322211", LocalDate.now(), new ArrayList<>(),
                 new Endereco("logradouro", "cidade", "Estado", "complemento")));
     }
 
 
     @Test
     public void deveriaRetornarClienteCriado(){
-        ClienteCriacaoDto clienteRequest = new ClienteCriacaoDto("11122233344", new EnderecoCriacaoDto("logradouro", "cidade", "Estado", "complemento"));
+        ClienteCriacaoDto clienteRequest = new ClienteCriacaoDto("11122233344", new EnderecoCriacaoDto("logradouroUnico", "cidade", "Estado", "complemento"));
 
         ClienteDto clienteDto = clienteService.criar(clienteRequest);
 
         Cliente cliente = clienteRepository.findById(clienteDto.getId()).get();
-        Endereco endereco = enderecoRepository.findById(clienteDto.getEndereco().getId()).get();
 
         assertEquals(cliente.getId(), clienteDto.getId());
-        assertEquals(endereco.getId(), clienteDto.getEndereco().getId());
+        assertEquals(cliente.getEndereco().getLogradouro(), clienteDto.getEndereco().getLogradouro());
 
     }
 
     @Test
     public void deveriaRetornarErroAoCriarUmClienteComCpfDuplicado(){
-        Inicializar();
         ClienteCriacaoDto clienteRequest = new ClienteCriacaoDto("44433322211", new EnderecoCriacaoDto("logradouro", "cidade", "Estado", "complemento"));
 
         try{
@@ -88,7 +83,6 @@ public class ClienteServiceTest {
         EnderecoDto enderecoDto = clienteService.obterEnderecoCliente(cliente.getId());
 
         assertEquals(enderecoDto.getId(), cliente.getEndereco().getId());
-
     }
 
     @Test

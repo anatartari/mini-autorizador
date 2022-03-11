@@ -1,13 +1,17 @@
 package com.solutis.miniautorizador.service;
 
 import com.solutis.miniautorizador.dto.CartaoCriacaoDto;
+import com.solutis.miniautorizador.dto.ClienteDto;
 import com.solutis.miniautorizador.dto.TransacaoDto;
 import com.solutis.miniautorizador.exception.CartaoExistenteException;
 import com.solutis.miniautorizador.exception.CartaoInexistenteException;
 import com.solutis.miniautorizador.exception.SaldoInsuficienteException;
 import com.solutis.miniautorizador.exception.SenhaIncorretaException;
 import com.solutis.miniautorizador.model.Cartao;
+import com.solutis.miniautorizador.model.Cliente;
+import com.solutis.miniautorizador.model.Endereco;
 import com.solutis.miniautorizador.repository.CartaoRepository;
+import com.solutis.miniautorizador.repository.ClienteRepository;
 import org.junit.runner.RunWith;
 import com.solutis.miniautorizador.dto.CartaoDto;
 import org.junit.Test;
@@ -17,6 +21,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -30,29 +35,37 @@ public class CartaoServicoTest {
     private CartaoService servicoDeCartao;
     @Autowired
     private CartaoRepository cartaoRepository;
+    @Autowired
+    private ClienteRepository clienteRepository;
 
     private void Inicializar(){
-        Cartao cartao = new Cartao("123456789", "123456", 700.00);
-        cartaoRepository.save(cartao);
+        Cliente cliente = new Cliente("44433322211", LocalDate.now(), new ArrayList<>(),
+                new Endereco("logradouro", "cidade", "Estado", "complemento"));
+        clienteRepository.saveAndFlush(cliente);
+        Cartao cartao = new Cartao("123456789", "123456", 700.00, cliente);
+        cartaoRepository.saveAndFlush(cartao);
     }
 
     @Test
     public void deveRetornarSucessoAoCriarCartao(){
-        CartaoCriacaoDto cartao = new CartaoCriacaoDto("987654321", "123456");
+        Inicializar();
+
+        CartaoCriacaoDto cartao = new CartaoCriacaoDto("987654321", "123456", "44433322211");
 
         CartaoDto cartaoCriado = servicoDeCartao.criar(cartao);
 
-        Cartao cartaoResultado = new Cartao(cartaoCriado);
+        Cartao cartaoResultado = cartaoRepository.getById("987654321");
 
         assertEquals(500.00, cartaoRepository.findById(cartaoCriado.getNumeroCartao()).get().getSaldo());
         assertEquals(LocalDate.now(), cartaoResultado.getDataCriacao());
         assertEquals(LocalDate.now().plusYears(3).plusMonths(10), cartaoResultado.getValidade());
+        assertTrue(cartaoResultado.getCliente().getCpf().equals("44433322211"));
     }
 
     @Test
     public void deveRetornarErroAoCriarCartaoComNumeroExistente(){
         Inicializar();
-        CartaoCriacaoDto cartaoDuplicado = new CartaoCriacaoDto("123456789", "senha");
+        CartaoCriacaoDto cartaoDuplicado = new CartaoCriacaoDto("123456789", "senha", "44433322211");
 
         try{
             CartaoDto cartaoCriado = servicoDeCartao.criar(cartaoDuplicado);

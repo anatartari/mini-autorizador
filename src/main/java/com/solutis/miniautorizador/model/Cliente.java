@@ -23,7 +23,7 @@ public class Cliente {
     public String cpf;
     public LocalDate data_inicio;
 
-    @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "cliente", cascade = CascadeType.PERSIST)
     private List<Cartao> cartoes = new ArrayList<>();
 
     @OneToOne(cascade = CascadeType.ALL)

@@ -13,6 +13,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.Optional;
 
 @Getter
 @Setter
@@ -27,7 +28,7 @@ public class Cartao {
     @Column(name = "data_criacao")
     private LocalDate dataCriacao;
     private LocalDate validade;
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     private Cliente cliente;
 
     public Cartao(CartaoCriacaoDto cartaoCriacaoDto) {
@@ -38,15 +39,27 @@ public class Cartao {
         this.validade = LocalDate.now().plusYears(3).plusMonths(10);
     }
 
-    public void validarAtribuirNovoSaldo(Double valor, HandleException handleException) {
-        this.saldo = this.saldo >= valor ? this.saldo - valor :
-                (Double) handleException.throwExcecaoDeValidacao(ValidacoesEnum.SALDO_INSUFICIENTE);
-    }
-
-    public Cartao(String numeroCartao, String senha, double saldo) {
+    public Cartao(String numeroCartao, String senha, Double saldo, Cliente cliente) {
         this.numeroCartao = numeroCartao;
         this.senha = senha;
         this.saldo = saldo;
+        this.dataCriacao = LocalDate.now();
+        this.validade = LocalDate.now().plusYears(3).plusMonths(10);
+        this.cliente = cliente;
+    }
+
+    public Cartao(CartaoCriacaoDto cartaoCriacaoDto, Cliente cliente) {
+        this.numeroCartao = cartaoCriacaoDto.getNumeroCartao();
+        this.senha = cartaoCriacaoDto.getSenha();
+        this.saldo = 500.00;
+        this.dataCriacao = LocalDate.now();
+        this.validade = LocalDate.now().plusYears(3).plusMonths(10);
+        this.cliente = cliente;
+    }
+
+    public void validarAtribuirNovoSaldo(Double valor, HandleException handleException) {
+        this.saldo = this.saldo >= valor ? this.saldo - valor :
+                (Double) handleException.throwExcecaoDeValidacao(ValidacoesEnum.SALDO_INSUFICIENTE);
     }
 
     public Cartao(CartaoDto cartaoDto) {

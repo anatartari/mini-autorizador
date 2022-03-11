@@ -5,7 +5,9 @@ import com.solutis.miniautorizador.dto.CartaoDto;
 import com.solutis.miniautorizador.dto.TransacaoDto;
 import com.solutis.miniautorizador.exception.HandleException;
 import com.solutis.miniautorizador.model.Cartao;
+import com.solutis.miniautorizador.model.Cliente;
 import com.solutis.miniautorizador.repository.CartaoRepository;
+import com.solutis.miniautorizador.repository.ClienteRepository;
 import com.solutis.miniautorizador.utils.ValidacoesEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,13 +22,20 @@ public class CartaoService {
     private CartaoRepository cartaoRepository;
     @Autowired
     private HandleException handleException;
+    @Autowired
+    private ClienteRepository clienteRepository;
 
     public CartaoDto criar(CartaoCriacaoDto cartaoCriacaoDto) {
 
-        Object cartao = cartaoRepository.existsById(cartaoCriacaoDto.getNumeroCartao()) ? handleException.throwExcecaoDeValidacao(ValidacoesEnum.CARTAO_EXISTENTE)
-                : cartaoRepository.save(new Cartao(cartaoCriacaoDto));
+        Optional<Cliente> cliente = clienteRepository.findByCpf(cartaoCriacaoDto.getCpfCliente());
 
-        return new CartaoDto((Cartao) cartao);
+        Object clienteExistente = cliente.isPresent() ? true : handleException.throwExcecaoDeValidacao(ValidacoesEnum.CLIENTE_INEXISTENTE);
+
+        Cartao cartao = new Cartao(cartaoCriacaoDto, cliente.get());
+        Object cartaoCriado = cartaoRepository.existsById(cartaoCriacaoDto.getNumeroCartao()) ? handleException.throwExcecaoDeValidacao(ValidacoesEnum.CARTAO_EXISTENTE)
+                : cartaoRepository.saveAndFlush(cartao);
+
+        return new CartaoDto((Cartao) cartaoCriado);
     }
 
     public Optional<Double> obterSaldo(String numeroDeCartaoExistente) {

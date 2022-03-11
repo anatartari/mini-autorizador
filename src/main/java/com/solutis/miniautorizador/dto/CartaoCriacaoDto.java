@@ -1,5 +1,6 @@
 package com.solutis.miniautorizador.dto;
 
+import com.solutis.miniautorizador.utils.atributos.CartaoBaseAtributos;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -8,19 +9,15 @@ import javax.validation.constraints.NotNull;
 
 @Getter
 @Setter
-public class CartaoCriacaoDto {
+public class CartaoCriacaoDto extends CartaoBaseAtributos {
 
     @NotNull
     @NotEmpty
-    private String numeroCartao;
+    private String cpfCliente;
 
-    @NotNull
-    @NotEmpty
-    private String senha;
-
-    public CartaoCriacaoDto(String numeroCartao, String senha) {
-        this.numeroCartao = numeroCartao;
-        this.senha = senha;
+    public CartaoCriacaoDto(String numeroCartao, String senha, String cpfCliente) {
+        super(numeroCartao,senha);
+        this.cpfCliente = cpfCliente;
     }
 
     public CartaoCriacaoDto() {
