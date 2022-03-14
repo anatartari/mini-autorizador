@@ -59,7 +59,7 @@ public class CartaoServicoTest {
         assertEquals(500.00, cartaoRepository.findById(cartaoCriado.getNumeroCartao()).get().getSaldo());
         assertEquals(LocalDate.now(), cartaoResultado.getDataCriacao());
         assertEquals(LocalDate.now().plusYears(3).plusMonths(10), cartaoResultado.getValidade());
-        assertTrue(cartaoResultado.getCliente().getCpf().equals("44433322211"));
+        assertEquals("44433322211", cartaoResultado.getCliente().getCpf());
     }
 
     @Test

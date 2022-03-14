@@ -25,6 +25,13 @@ public class CartaoDto extends CartaoBaseAtributos {
         this.cpfCliente = cartao.getCliente().getCpf();
     }
 
+    public CartaoDto(String numeroCartao, String senha, String dataCriacao, String validade, String cpfCliente) {
+        super(numeroCartao, senha);
+        this.dataCriacao = dataCriacao;
+        this.validade = validade;
+        this.cpfCliente = cpfCliente;
+    }
+
     public static String formatarData(LocalDate data){
         return data.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
     }
